@@ -70,7 +70,87 @@ To view the floorplan, Magic is invoked after moving to the results/floorplan di
 
 Command to run :
 ```
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.floorplan.def &
+```
+Output :
 
+<img width="721" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/6aa2887e-e583-42ce-b471-c1ee2d6cb474">
+
+One can zoom into Magic layout by selecting an area with left and right mouse click followed by pressing "z" key.Various components can be identified by using the what command in tkcon window after making a selection on the component.
+
+<img width="720" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/13ff276b-d9b0-478c-a0c6-12b57848c30d">
+
+First we need to bind the netlist with physical cells. We have shapes for OR, AND and every cell for pratice purpose. But in reality we dont have such shapes, we have give an physical dimensions like rectangles or squares weight and width. This information is given in libs and lefs. Now we place these cells in our design by initilaising it.
+
+#### Optimize Placement
+* In this stage, we estimate length & capacitance of wires to determine the optimized placement of cells. So if we have not maintained signal integrity, then we use buffers to reduce wire length and capacitance and have optimized placement.
+* Placement occurs in two stages: GLobal & detailed placement. Global Placement: It finds optimal position for all cells which may not be legal and cells may overlap. Optimization is done through reduction of half parameter wire length.Detailed Placement: It alters the position of cells post global placement so as to legalise them.
+
+#### LAB
+Command to run :
+```
+run_placement
+```
+Output :
+
+<img width="165" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/150127c6-ba14-49fd-8063-36899cebcf4a">
+
+#### Cell design
+Standard cell design flow involves the following:
+
+-Inputs: PDKs, DRC & LVS rules, SPICE models, libraries, user-defined specifications.
+
+-Design steps: Circuit design, Layout design (Art of layout Euler's path and stick diagram), Extraction of parasitics, Characterization (timing, noise, power).
+
+-Outputs: CDL (circuit description language), LEF, GDSII, extracted SPICE netlist (.cir), timing, noise and power .lib file
+
+#### Standard Cell Characterization Flow
+A typical standard cell characterization flow that is followed in the industry includes the following steps:
+
+1. Read in the models and tech files
+
+2. Read extracted spice Netlist
+
+3. Recognise behavior of the cells
+
+4. Read the subcircuits
+
+5. Attach power sources
+
+6. Apply stimulus to characterization setup
+
+7. Provide neccesary output capacitance loads
+
+8. Provide neccesary simulation commands
+
+Now all these 8 steps are fed in together as a configuration file to a characterization software called GUNA. This software generates timing, noise, power models. These .libs are classified as Timing characterization, power characterization and noise characterization.
+
+#### TIMING CHARACTERIZATION
+
+We have timing threshold definitions as follows:
+
+## Timing threshold definitions 
+Timing defintion |	Value
+-------------- | --------------
+slew_low_rise_thr	| 20% value
+slew_high_rise_thr | 80% value
+slew_low_fall_thr |	20% value
+slew_high_fall_thr |	80% value
+in_rise_thr	| 50% value
+in_fall_thr |	50% value
+out_rise_thr |	50% value
+out_fall_thr | 50% value
+
+**Propagation Delay** :The time difference between when the transitional input reaches 50% of its final value and when the output reaches 50% of its final value. Poor choice of threshold values lead to negative delay values. Even thought you have taken good threshold values, sometimes depending upon how good or bad the slew, the dealy might be still +ve or -ve.
+```
+Propagation delay = time(out_thr) - time(in_thr)
+```
+**Transition Time** :The time it takes the signal to move between states is the transition time , where the time is measured between 10% and 90% or 20% to 80% of the signal levels.
+```
+Rise transition time = time(slew_high_rise_thr) - time (slew_low_rise_thr)
+```
+```
+Low transition time = time(slew_high_fall_thr) - time (slew_low_fall_thr)
 ```
 
-
+### DAY 3
