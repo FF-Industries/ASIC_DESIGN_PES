@@ -154,3 +154,5 @@ Low transition time = time(slew_high_fall_thr) - time (slew_low_fall_thr)
 ```
 
 ### DAY 3
+#### Design Library Cell using ngspice simulations
+IO Placer revision
