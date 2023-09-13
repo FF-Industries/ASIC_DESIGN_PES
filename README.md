@@ -177,3 +177,32 @@ IO Placer revision
 <img width="598" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/60f7860e-2c87-4910-bac3-e5e1fc309ba8">
 
 #### LAB
+Command to run :
+```
+git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+magic -T sky130A.tech sky130_inv.mag &
+```
+output :
+
+<img width="263" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/ccdc7d64-3649-4dbe-bead-941dd43cf781">
+
+####Mask CMOS Fabrication
+The 16-mask CMOS (Complementary Metal-Oxide-Semiconductor) fabrication process involves several crucial steps for creating integrated circuits. Let's break it down with some jargon:
+
+1. Substrate Selection: In the initial phase, the appropriate semiconductor substrate is chosen.
+
+2. Active Region Creation: To isolate the active regions for transistors, the process begins with the deposition of SiO2 and Si3N4 layers, followed by photolithography and silicon nitride etching.This is known as LOCOS (Local Oxidation of Silicon), where oxide is grown in certain regions.Subsequently, Si3N4 is removed using hot phosphoric acid.
+
+3. N-Well and P-Well Formation:The N-well and P-well regions are created separately.P-well formation involves photolithography and ion implantation of p-type Boron material into the p-substrate.N-well is formed similarly with n-type Phosphorus material.High-temperature furnace processes drive-in diffusion to establish well depths, known as the tub process.
+
+4. Gate Formation: The gate is a pivotal CMOS transistor terminal that controls threshold voltages for transistor switching.A polysilicon layer is deposited and photolithography techniques are applied to create NMOS and PMOS gates.Important parameters for gate formation include oxide capacitance and doping concentration.
+
+5. Lightly Doped Drain (LDD) Formation: LDD is created to mitigate hot electron and short channel effects.
+
+6. Source & Drain Formation: Thin oxide layers are added to avoid channel effects during ion implantation.N+ and P+ implants are performed using Arsenic implantation and high-temperature annealing.
+
+7. Local Interconnect Formation: Thin screen oxide is removed through etching in HF solution.Titanium deposition through sputtering is initiated.  Heat treatment results in chemical reactions, producing low-resistant titanium silicon dioxide for interconnect contacts and titanium nitride for top-level connections, enabling local communication.
+
+8. Higher Level Metal Formation: To achieve suitable metal interconnects, non-planar surface topography is addressed.Chemical Mechanical Polishing (CMP) is utilized by doping silicon oxide with Boron or Phosphorus to achieve surface planarization.TiN and blanket Tungsten layers are deposited and subjected to CMP.An aluminum (Al) layer is added and subjected to photolithography and CMP.This constitutes the first level of interconnects, and additional interconnect layers are added to reach higher-level metal layers.
+
+9. Dielectric Layer Addition: Finally, a dielectric layer, typically Si3N4, is applied to safeguard the chip.
