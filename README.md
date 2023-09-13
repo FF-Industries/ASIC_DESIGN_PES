@@ -95,6 +95,9 @@ Output :
 
 <img width="165" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/150127c6-ba14-49fd-8063-36899cebcf4a">
 
+<img width="723" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/d0fb2d55-5c33-40d3-a162-40eabbf40e88">
+
+
 #### Cell design
 Standard cell design flow involves the following:
 
@@ -156,3 +159,21 @@ Low transition time = time(slew_high_fall_thr) - time (slew_low_fall_thr)
 ### DAY 3
 #### Design Library Cell using ngspice simulations
 IO Placer revision
+* PnR is a iterative flow and hence, we can make changes to the environment variables in the fly to observe the changes in our design.
+* Let us say If I want to change my pin configuration along the core from equvi distance randomly placed to someother placement, we just set that IO mode variable on command prompt as shown below.
+
+#### SPICE Deck Creation and Simulation for CMOS inverterBefore performing a SPICE simulation we need to create SPICE Deck SPICE Deck provides information about the following:
+*Component connectivity - Connectivity of the Vdd, Vss,Vin, substrate. Substrate tunes the threshold voltage of the MOS.
+*component values - values of PMOS and NMOS, Output load, Input Gate Voltage, supply voltage.
+*Node Identification and naming - Nodes are required to define the SPICE Netlist For example M1 out in vdd vdd pmos w = 0.375u L = 0.25u , cload out 0 10f
+
+<img width="584" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/d1525eca-e35a-49cf-a504-f512ed47dc9d">&nbsp;
+
+#### Switching Threshold Vm
+
+*The Switching Threshold of a CMOS inverter is the point where the Vin = Vout on the DC Transfer characreristics.
+*At this point, both the transistors are in saturation region, means both are turned on and have high chances of current flowing driectly from VDD to Ground called Leakage current.
+
+<img width="598" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/60f7860e-2c87-4910-bac3-e5e1fc309ba8">
+
+#### LAB
