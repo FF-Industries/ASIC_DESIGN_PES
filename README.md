@@ -206,3 +206,21 @@ The 16-mask CMOS (Complementary Metal-Oxide-Semiconductor) fabrication process i
 8. Higher Level Metal Formation: To achieve suitable metal interconnects, non-planar surface topography is addressed.Chemical Mechanical Polishing (CMP) is utilized by doping silicon oxide with Boron or Phosphorus to achieve surface planarization.TiN and blanket Tungsten layers are deposited and subjected to CMP.An aluminum (Al) layer is added and subjected to photolithography and CMP.This constitutes the first level of interconnects, and additional interconnect layers are added to reach higher-level metal layers.
 
 9. Dielectric Layer Addition: Finally, a dielectric layer, typically Si3N4, is applied to safeguard the chip.
+
+<img width="439" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/0fd9f5c3-4506-47ea-a09b-4af7a8bf226e">
+
+#### Designing standard cell and SPICE extraction in MAGIC
+
+In this section, we will verify the logic implemented by layout by extracting spice netlist and performing simulation in ngspice.
+
+Commands to run :
+```
+pwd
+extract all
+ext2spice cthresh 0 rthresh 0
+ext2spice
+```
+Output: 
+
+![image](https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/9417a0e7-a082-4cc6-b4a5-909b3cbb78d4)
+
