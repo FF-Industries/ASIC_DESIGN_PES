@@ -3,7 +3,7 @@
 - [DAY 1](https://github.com/FF-Industries/ASIC_DESIGN_PES/blob/main/README.md#day-1)
 - [DAY 2](https://github.com/FF-Industries/ASIC_DESIGN_PES/blob/main/README.md#day-2)
 - [DAY 3](https://github.com/FF-Industries/ASIC_DESIGN_PES/blob/main/README.md#day-3)
-- [DAY 4](https://github.com/FF-Industries/ASIC_PES-CLASS/blob/main/README.md#day-4)
+- [DAY 4](https://github.com/FF-Industries/ASIC_DESIGN_PES/blob/main/README.md#day-4)
 - [DAY 5](https://github.com/FF-Industries/ASIC_PES-CLASS/blob/main/README.md#day-5)
 
 ### DAY 1
