@@ -220,7 +220,72 @@ extract all
 ext2spice cthresh 0 rthresh 0
 ext2spice
 ```
+
+```
+ngspice sky130_inv.spice
+plot y vs time a
+```
 Output: 
 
 ![image](https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/9417a0e7-a082-4cc6-b4a5-909b3cbb78d4)
 
+<img width="619" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/ce27c2f6-6c2d-4610-8f07-8c1d3daa5052">
+
+<img width="624" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/ae977d84-4f92-4ab2-8055-79d87d4e275e">
+
+<img width="621" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/a800456b-f5c0-4f92-9aa8-506db669a4a9">
+
+#### DRC violations
+
+Commands to run :
+```
+wget http://opencircuitdesign.com/open_pdks/archive/drc_tests.tgz
+tar xfz drc_tests.tgz
+magic -d XR met3.mag
+cif see VIA2
+```
+
+Output :
+
+<img width="623" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/29441c9e-5e6f-4695-bd2a-4f30ab8b05b1">
+
+<img width="410" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/1b0b4e07-fb18-4c6f-bc02-c908451a02a8">
+
+<img width="608" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/fde10293-4c1e-4862-902e-f05fa6894c42">
+
+#### Load Sky130 tech rules for drc challenges
+First open using the command :
+```
+magic -d XR poly.mag
+```
+
+<img width="622" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/15c647d6-898f-4f4c-ba49-aa9ef30e56e5">
+
+We find that distance between regular polysilicon & poly resistor should be 22um but it is showing 17um and still no errors . We should go to sky130A.tech file and modify as follows to detect this error.
+
+In line
+```
+spacing npres *nsd 480 touching_illegal \
+	"poly.resistor spacing to N-tap < %d (poly.9)"
+```
+change to
+```
+spacing npres allpolynonres 480 touching_illegal \
+	"poly.resistor spacing to N-tap < %d (poly.9)"
+```
+In line
+```
+spacing xhrpoly,uhrpoly,xpc alldiff 480 touching_illegal \
+
+	"xhrpoly/uhrpoly resistor spacing to diffusion < %d (poly.9)"
+```
+change to
+```
+spacing xhrpoly,uhrpoly,xpc allpolynonres 480 touching_illegal \
+
+	"xhrpoly/uhrpoly resistor spacing to diffusion < %d (poly.9)"
+```
+
+<img width="609" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/26d3f903-3fbf-4912-ad85-94b2f10846ee">
+
+### DAY 4
