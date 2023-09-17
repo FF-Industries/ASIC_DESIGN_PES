@@ -242,52 +242,194 @@ Commands to run :
 wget http://opencircuitdesign.com/open_pdks/archive/drc_tests.tgz
 tar xfz drc_tests.tgz
 magic -d XR met3.mag
-cif see VIA2
 ```
 
 Output :
 
+<img width="599" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/0151020c-65be-42a0-bccc-dfb1051b9b68">
+
 <img width="623" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/29441c9e-5e6f-4695-bd2a-4f30ab8b05b1">
 
-<img width="410" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/1b0b4e07-fb18-4c6f-bc02-c908451a02a8">
-
-<img width="608" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/fde10293-4c1e-4862-902e-f05fa6894c42">
 
 #### Load Sky130 tech rules for drc challenges
-First open using the command :
-```
-magic -d XR poly.mag
-```
 
-<img width="622" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/15c647d6-898f-4f4c-ba49-aa9ef30e56e5">
+In tkcon window use ```drc why``` to see error.
+First load the poly file by load poly.mag on tkcon window.There is a DRC error in the poly.mag file in 'poly.9'.
 
-We find that distance between regular polysilicon & poly resistor should be 22um but it is showing 17um and still no errors . We should go to sky130A.tech file and modify as follows to detect this error.
+<img width="620" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/c971499d-0cde-4f99-b85c-0b1dc2423476">
 
-In line
+In line :
 ```
 spacing npres *nsd 480 touching_illegal \
 	"poly.resistor spacing to N-tap < %d (poly.9)"
 ```
-change to
+Change to :
 ```
 spacing npres allpolynonres 480 touching_illegal \
 	"poly.resistor spacing to N-tap < %d (poly.9)"
 ```
-In line
+In line ;
 ```
 spacing xhrpoly,uhrpoly,xpc alldiff 480 touching_illegal \
-
 	"xhrpoly/uhrpoly resistor spacing to diffusion < %d (poly.9)"
 ```
-change to
+Change to :
 ```
 spacing xhrpoly,uhrpoly,xpc allpolynonres 480 touching_illegal \
-
 	"xhrpoly/uhrpoly resistor spacing to diffusion < %d (poly.9)"
 ```
 
-<img width="609" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/26d3f903-3fbf-4912-ad85-94b2f10846ee">
+<img width="612" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/eafc8dd7-d12b-4b4d-9097-0b65418df3bd">
 
 ### DAY 4
 
+#### Timing Analysis & CTS
 
+A requirement for ports as specified in tracks.info is that they should be at intersection of horizontal and vertical tracks. The CMOS Inverter ports A and Y are on li1 layer. It needs to be ensured that they're on the intersection of horizontal and vertical tracks. We access the tracks.info file for the pitch and direction information:
+
+<img width="186" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/23b99b85-df15-4afe-b6bb-3f099ff6155f">
+
+To ensure that ports lie on the intersection point, the grid spacing in Magic (tkcon) must be changed to the li1 X and li1 Y values. Convergence of grid and tracks can be achieved using the following command:
+```
+grid 0.46um 0.34um 0.23um 0.17um
+```
+
+#### Set port class and port use attributes for layout
+
+After defining ports, the next step is setting port class and port use attributes.
+
+Select port A in magic:
+```
+port class input
+port use signal
+```
+Select Y area
+```
+port class output
+port use signal
+```
+Select VPWR area
+```
+port class inout
+port use power
+```
+Select VGND area
+```
+port class inout
+port use ground
+```
+
+LEF extraction can be carried out in tkcon as follows:
+```
+lef write
+```
+This generates sky130_vsdinv.lef file.
+
+#### Steps to include custom cell in ASIC design
+We have created a custom standard cell in previous steps of an inverter. Copy lef file, sky130_fd_sc_hd_typical.lib, sky130_fd_sc_hd_slow.lib & sky130_fd_sc_hd_fast.lib to src folder of picorv32a from libs folder vsdstdcelldesign. Then modify the config.tcl as follows.
+```
+set ::env(DESIGN_NAME) "picorv32a"
+
+set ::env(VERILOG_FILES) "$::env(DESIGN_DIR)/src/picorv32a.v"
+
+set ::env(CLOCK_PORT) "clk"
+set ::env(CLOCK_NET) $::env(CLOCK_PORT)
+
+set ::env(GLB_RESIZER_TIMING_OPTIMIZATIONS) {1}
+
+set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+set ::env(LIB_FASTEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_TYPICAL) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+
+set ::env(EXTRA_LEFS) [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
+
+set filename $::env(DESIGN_DIR)/$::env(PDK)_$::env(STD_CELL_LIBRARY)_config.tcl
+if { [file exists $filename] == 1} {
+	source $filename
+}
+```
+To integrate standard cell in openlane flow after make mount , perform following commands:
+```
+prep -design picorv32a -tag RUN_2023.09.09_20.37.18 -overwrite 
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+run_synthesis
+```
+
+<img width="617" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/0ffeb8dc-6e12-4143-a278-15efcd6bf495">
+
+<img width="617" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/dcc0efd2-d15d-4b40-8909-3e6b5d1c0cf9">
+
+Next floorplan is run, followed by placement:
+```
+init_floorplan
+run_placement
+```
+
+#### Post-synthesis timing analysis Using OpenSTA
+
+Timing analysis is carried out outside the openLANE flow using OpenSTA tool. For this, a new file pre_sta.conf is created. This file would be reqiured to carry out the STA analysis. Invoke OpenSTA outside the openLANE flow as follows: ```sta pre_sta.conf```.
+
+#### Clock Tree Synthesis 
+The purpose of building a clock tree is enable the clock input to reach every element and to ensure a zero clock skew. H-tree is a common methodology followed in CTS. Before attempting a CTS run in TritonCTS tool, if the slack was attempted to be reduced in previous run, the netlist may have gotten modified by cell replacement techniques. Therefore, the verilog file needs to be modified using the write_verilog command. Then, the synthesis, floorplan and placement is run again. To run CTS use the below command: ```run_cts```.
+
+The CTS run adds clock buffers in therefore buffer delays come into picture and our analysis from here on deals with real clocks. Setup and hold time slacks may now be analysed in the post-CTS STA anlysis in OpenROAD within the openLANE flow:
+```
+openroad
+write_db pico_cts.db
+read_db pico_cts.db
+read_verilog /openLANE_flow/designs/picorv32a/runs/03-07_11-25/results/synthesis/picorv32a.synthesis_cts.v
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+link_design picorv32a
+read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
+set_propagated_clock (all_clocks)
+report_checks -path_delay min_max -format full_clock_expanded -digits 4
+```
+
+<img width="476" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/66dc3af1-fa1d-4c88-a645-173dc48526bb">
+
+<img width="494" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/889109ba-8552-4c73-8aaa-003d9d68b838">
+
+### DAY 5
+#### Final steps in RTL2GDS
+
+* Routing is the process of establishing a physical connection between two pins. Algorithms designed for routing take source and target pins and aim to find the most efficient path between them, ensuring a valid connection exists.
+
+* The Maze Routing algorithm, such as the Lee algorithm, is one approach for solving routing problems. In this method, a grid similar to the one created during cell customization is utilized for routing purposes. The Lee algorithm starts with two designated points, the source and target, and leverages the routing grid to identify the shortest or optimal route between them.
+
+<img width="414" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/56a60717-a6b2-46b4-a78e-a669d8b8eaed">
+
+* DRC verifies whether a design meets the predefined process technology rules given by the foundry for its manufacturing. DRC checking is an essential part of the physical design flow and ensures the design meets manufacturing requirements and will not result in a chip failure. It defines the Quality of chip. They are so many DRCs.
+
+#### Power Distribution Network generation
+
+Unlike the general ASIC flow, Power Distribution Network generation is not a part of floorplan run in OpenLANE. PDN must be generated after CTS and post-CTS STA analyses: ```gen_pdn```.
+We can confirm the success of PDN by checking the current def environment variable: ```echo $::env(CURRENT_DEF)```.
+
+<img width="561" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/da7c5417-8795-4559-bb19-0609c734b6d8">
+
+gen_pdn – Generate a power distribution network The power distribution network must use design_cts.def as the input def file. This creates a grid and band for Vdd and floor. These are placed around the standard cell. A standard cell is designed so that its height is a multiple of the distance between its Vdd and ground bar. 
+
+Start routing by using : ```run_routing```.
+
+<img width="569" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/e0c5ff26-c9e7-4651-8d80-65287107fa7a">
+
+Openlane new method :
+```
+cd Desktop/work/tools/openlane_working_dir/OpenLane/ 
+./flow.tcl -interactive
+package require openlane 0.9
+prep -design picorv32a
+run_synthesis
+run_floorplan
+detailed_placement
+run_cts
+run_routing
+```
+OpenLANE old method :
+```
+cd Desktop/OpenLane 
+make mount
+./flow.tcl -design picorv32a
+```
