@@ -207,8 +207,6 @@ The 16-mask CMOS (Complementary Metal-Oxide-Semiconductor) fabrication process i
 
 9. Dielectric Layer Addition: Finally, a dielectric layer, typically Si3N4, is applied to safeguard the chip.
 
-<img width="439" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/0fd9f5c3-4506-47ea-a09b-4af7a8bf226e">
-
 #### Designing standard cell and SPICE extraction in MAGIC
 
 In this section, we will verify the logic implemented by layout by extracting spice netlist and performing simulation in ngspice.
@@ -340,9 +338,7 @@ add_lefs -src $lefs
 run_synthesis
 ```
 
-<img width="617" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/0ffeb8dc-6e12-4143-a278-15efcd6bf495">
-
-<img width="617" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/dcc0efd2-d15d-4b40-8909-3e6b5d1c0cf9">
+<img width="275" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/278a9583-ea31-4d29-b4c6-17ab56304d54">
 
 Next floorplan is run, followed by placement:
 ```
@@ -350,12 +346,19 @@ init_floorplan
 run_placement
 ```
 
+<img width="621" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/3aefbe06-d6ce-43c7-80a9-bd846f09992b">
+
 #### Post-synthesis timing analysis Using OpenSTA
 
 Timing analysis is carried out outside the openLANE flow using OpenSTA tool. For this, a new file pre_sta.conf is created. This file would be reqiured to carry out the STA analysis. Invoke OpenSTA outside the openLANE flow as follows: ```sta pre_sta.conf```.
 
+<img width="613" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/ad546e75-7f83-43f4-aeaa-44b3e424602e">
+
+There is a slack violation.
+Setting MAX_FANOUT value to 4 reduces the slack violation : ```set ::env(SYNTH_MAX_FANOUT) 4```.
+
 #### Clock Tree Synthesis 
-The purpose of building a clock tree is enable the clock input to reach every element and to ensure a zero clock skew. H-tree is a common methodology followed in CTS. Before attempting a CTS run in TritonCTS tool, if the slack was attempted to be reduced in previous run, the netlist may have gotten modified by cell replacement techniques. Therefore, the verilog file needs to be modified using the write_verilog command. Then, the synthesis, floorplan and placement is run again. To run CTS use the below command: ```run_cts```.
+The purpose of building a clock tree is enable the clock input to reach every element and to ensure a zero clock skew. H-tree is a common methodology followed in CTS. To run CTS use the below command: ```run_cts```.
 
 The CTS run adds clock buffers in therefore buffer delays come into picture and our analysis from here on deals with real clocks. Setup and hold time slacks may now be analysed in the post-CTS STA anlysis in OpenROAD within the openLANE flow:
 ```
@@ -370,9 +373,17 @@ set_propagated_clock (all_clocks)
 report_checks -path_delay min_max -format full_clock_expanded -digits 4
 ```
 
-<img width="476" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/66dc3af1-fa1d-4c88-a645-173dc48526bb">
+<img width="501" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/2dd0b7aa-2892-4a6c-87f8-703a524125e2">
 
 <img width="494" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/889109ba-8552-4c73-8aaa-003d9d68b838">
+
+
+```
+report_clock_skew -hold
+report clock_skew -setup
+```
+
+<img width="463" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/66d3c9b9-ec07-46a3-a49a-91b2acf51df3">
 
 ### DAY 5
 #### Final steps in RTL2GDS
@@ -392,27 +403,13 @@ We can confirm the success of PDN by checking the current def environment variab
 
 <img width="561" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/da7c5417-8795-4559-bb19-0609c734b6d8">
 
-gen_pdn – Generate a power distribution network The power distribution network must use design_cts.def as the input def file. This creates a grid and band for Vdd and floor. These are placed around the standard cell. A standard cell is designed so that its height is a multiple of the distance between its Vdd and ground bar. 
+```gen_pdn``` – Generate a power distribution network The power distribution network must use design_cts.def as the input def file. This creates a grid and band for Vdd and floor. These are placed around the standard cell. A standard cell is designed so that its height is a multiple of the distance between its Vdd and ground bar. 
+
+<img width="535" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/035cc2e0-ce68-46d5-8666-07e530efda10">
 
 Start routing by using : ```run_routing```.
 
 <img width="569" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/e0c5ff26-c9e7-4651-8d80-65287107fa7a">
 
-Openlane new method :
-```
-cd Desktop/work/tools/openlane_working_dir/OpenLane/ 
-./flow.tcl -interactive
-package require openlane 0.9
-prep -design picorv32a
-run_synthesis
-run_floorplan
-detailed_placement
-run_cts
-run_routing
-```
-OpenLANE old method :
-```
-cd Desktop/OpenLane 
-make mount
-./flow.tcl -design picorv32a
-```
+#### SPEF Extraction
+After routing has been completed interconnect parasitics can be extracted to perform sign-off post-route STA analysis. The parasitics are extracted into a SPEF file.
