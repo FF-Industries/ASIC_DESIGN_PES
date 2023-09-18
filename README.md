@@ -186,7 +186,7 @@ output :
 
 <img width="263" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/ccdc7d64-3649-4dbe-bead-941dd43cf781">
 
-####Mask CMOS Fabrication
+#### Mask CMOS Fabrication
 The 16-mask CMOS (Complementary Metal-Oxide-Semiconductor) fabrication process involves several crucial steps for creating integrated circuits. Let's break it down with some jargon:
 
 1. Substrate Selection: In the initial phase, the appropriate semiconductor substrate is chosen.
