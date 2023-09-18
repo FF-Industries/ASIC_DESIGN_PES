@@ -375,8 +375,7 @@ report_checks -path_delay min_max -format full_clock_expanded -digits 4
 
 <img width="501" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/2dd0b7aa-2892-4a6c-87f8-703a524125e2">
 
-<img width="494" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/889109ba-8552-4c73-8aaa-003d9d68b838">
-
+<img width="484" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/7d1cfafa-ae60-4434-9c3e-48a859ca2a90">
 
 ```
 report_clock_skew -hold
