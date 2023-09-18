@@ -399,7 +399,6 @@ report clock_skew -setup
 #### Power Distribution Network generation
 
 Unlike the general ASIC flow, Power Distribution Network generation is not a part of floorplan run in OpenLANE. PDN must be generated after CTS and post-CTS STA analyses: ```gen_pdn```.
-We can confirm the success of PDN by checking the current def environment variable: ```echo $::env(CURRENT_DEF)```.
 
 <img width="561" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/da7c5417-8795-4559-bb19-0609c734b6d8">
 
