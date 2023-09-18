@@ -283,7 +283,7 @@ spacing xhrpoly,uhrpoly,xpc allpolynonres 480 touching_illegal \
 
 #### Timing Analysis & CTS
 
-A requirement for ports as specified in tracks.info is that they should be at intersection of horizontal and vertical tracks. The CMOS Inverter ports A and Y are on li1 layer. It needs to be ensured that they're on the intersection of horizontal and vertical tracks. We access the tracks.info file for the pitch and direction information:
+A requirement for ports as specified in tracks.info is that they should be at intersection of horizontal and vertical tracks. The CMOS Inverter ports A and Y are on li1 layer. It needs to be ensured that they're on the intersection of horizontal and vertical tracks. We access the tracks.info file by ```less tracks.info```.
 
 <img width="186" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/23b99b85-df15-4afe-b6bb-3f099ff6155f">
 
