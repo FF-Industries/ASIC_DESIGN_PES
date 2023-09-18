@@ -293,37 +293,20 @@ To ensure that ports lie on the intersection point, the grid spacing in Magic (t
 ```
 grid 0.46um 0.34um 0.23um 0.17um
 ```
-
-#### Set port class and port use attributes for layout
-
-After defining ports, the next step is setting port class and port use attributes.
-
-Select port A in magic:
-```
-port class input
-port use signal
-```
-Select Y area
-```
-port class output
-port use signal
-```
-Select VPWR area
-```
-port class inout
-port use power
-```
-Select VGND area
-```
-port class inout
-port use ground
-```
-
 LEF extraction can be carried out in tkcon as follows:
 ```
 lef write
 ```
 This generates sky130_vsdinv.lef file.
+
+Type less sky130_vsdinv.lef
+
+<img width="615" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/450adac1-d663-4b74-9e4b-d81eb1a7fe09">
+
+Then copy the file .
+
+<img width="618" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/b5546516-f9aa-4688-9aaa-0e23efbbad24">
+
 
 #### Steps to include custom cell in ASIC design
 We have created a custom standard cell in previous steps of an inverter. Copy lef file, sky130_fd_sc_hd_typical.lib, sky130_fd_sc_hd_slow.lib & sky130_fd_sc_hd_fast.lib to src folder of picorv32a from libs folder vsdstdcelldesign. Then modify the config.tcl as follows.
