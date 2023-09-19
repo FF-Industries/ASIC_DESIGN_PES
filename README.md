@@ -338,6 +338,8 @@ add_lefs -src $lefs
 run_synthesis
 ```
 
+<img width="648" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/811d1275-73da-4e2c-b5a9-76cb39e84795">
+
 <img width="275" alt="image" src="https://github.com/FF-Industries/ASIC_DESIGN_PES/assets/136846161/278a9583-ea31-4d29-b4c6-17ab56304d54">
 
 Next floorplan is run, followed by placement:
